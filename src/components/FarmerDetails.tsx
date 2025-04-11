@@ -1,6 +1,7 @@
-import React, { useState } from "react";
+
 import { useParams } from "react-router-dom";
 import { farmers } from "../data/farmers";
+import { useState } from "react";
 
 const FarmerDetails = () => {
   const { id } = useParams();

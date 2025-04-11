@@ -1,5 +1,5 @@
 // src/pages/Farmers.tsx
-import React from "react";
+
 import { useNavigate } from "react-router-dom";
 
 const Farmers = () => {
