@@ -27,7 +27,7 @@ const Sidebar = () => {
           isOpen ? "block" : "hidden"
         } lg:block bg-gray-900  text-amber-50 w-60 p-4 h-screen space-y-4 fixed lg:static z-50 overflow-y-auto `}
       > 
-        <div className="font-bold text-lg mb-4 cursor-pointer"><a href="/"><img src="./public/logo.jpg" alt=""  /></a></div>
+        <div className="font-bold text-lg mb-4 cursor-pointer"><a href="/"><img src="/logo.png" alt=""  /></a></div>
 
         <div className="font-semibold cursor-pointer flex items-center gap-2 py-10"><RiDashboardLine  /><Link to='/dashboard'>Dashboard</Link></div>
 
