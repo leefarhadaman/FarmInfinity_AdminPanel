@@ -1,6 +1,4 @@
-
-
-import  { useEffect, useState } from "react";
+import { useEffect, useState } from "react";
 import axios from "axios";
 import { Link } from "react-router-dom";
 
@@ -105,8 +103,7 @@ const Fpo = () => {
       "created_at": "2025-03-10T12:00:00Z",
       "updated_at": "2025-03-10T12:00:00Z"
     }
-  ]
-  );
+  ]);
   const [loading, setLoading] = useState(true);
 
   useEffect(() => {
@@ -117,7 +114,7 @@ const Fpo = () => {
             Authorization: `Bearer ${localStorage.getItem("keycloak-token")}`,
           },
         });
-        setFpos(response.data);
+        setFpos(response.data); // Replace the hardcoded data with fetched data
       } catch (error) {
         console.error("Error fetching FPOs:", error);
       } finally {
@@ -148,26 +145,27 @@ const Fpo = () => {
               </tr>
             </thead>
             <tbody>
-              {fpos.map((fpo) => (
-                <tr key={fpo.id} className="border-t hover:bg-gray-50">
-                  <td className="px-4 py-2">{fpo.entity_name}</td>
-                  <td className="px-4 py-2">{fpo.no_of_farmers}</td>
-                  <td className="px-4 py-2">{fpo.state}</td>
-                  <td className="px-4 py-2">{fpo.district}</td>
-                  <td className="px-4 py-2">{fpo.contact_person_phone}</td>
-                  <td className="px-4 py-2">
-                    <Link
-                      to={`/fpo/${fpo.id}`}
-                      className="text-blue-500 hover:underline"
-                    >
-                      View Details →
-                    </Link>
-                  </td>
-                </tr>
-              ))}
-              {fpos.length === 0 && (
+              {fpos.length > 0 ? (
+                fpos.map((fpo) => (
+                  <tr key={fpo.id} className="border-t hover:bg-gray-50">
+                    <td className="px-4 py-2">{fpo.entity_name}</td>
+                    <td className="px-4 py-2">{fpo.no_of_farmers}</td>
+                    <td className="px-4 py-2">{fpo.state}</td>
+                    <td className="px-4 py-2">{fpo.district}</td>
+                    <td className="px-4 py-2">{fpo.contact_person_phone}</td>
+                    <td className="px-4 py-2">
+                      <Link
+                        to={`/fpo/${fpo.id}`}
+                        className="text-blue-500 hover:underline"
+                      >
+                        View Details →
+                      </Link>
+                    </td>
+                  </tr>
+                ))
+              ) : (
                 <tr>
-                  <td  className="px-4 py-4 text-center text-gray-500">
+                  <td className="px-4 py-4 text-center text-gray-500" >
                     No FPOs found.
                   </td>
                 </tr>
