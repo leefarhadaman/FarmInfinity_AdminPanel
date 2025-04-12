@@ -5,37 +5,108 @@ import axios from "axios";
 import { Link } from "react-router-dom";
 
 const Fpo = () => {
-  const [fpos, setFpos] = useState([{
-    "id": "string",
-    "fpo_id": "string",
-    "constitution": "string",
-    "entity_name": "string",
-    "no_of_farmers": 0,
-    "address": "string",
-    "state": "string",
-    "district": "string",
-    "area_of_operation": 0,
-    "establishment_year": "string",
-    "major_crop_produced": [
-      "string"
-    ],
-    "previous_year_turnover": 0,
-    "contact_person_name": "string",
-    "contact_person_phone": "+01233037605",
-    "pan_no": "string",
-    "is_pan_copy_collected": true,
-    "pan_image": "string",
-    "is_incorporation_doc_collected": true,
-    "incorporation_doc_img": "string",
-    "is_registration_no_collected": true,
-    "registration_no": "string",
-    "registration_no_img": "string",
-    "is_director_shareholder_list_collected": true,
-    "director_shareholder_list_image": "string",
-    "active": true,
-    "created_at": "string",
-    "updated_at": "string"
-  }]);
+  const [fpos, setFpos] = useState([
+    {
+      "id": "FPO001",
+      "fpo_id": "FPOID001",
+      "constitution": "Cooperative Society",
+      "entity_name": "Green Fields Farmers Organization",
+      "no_of_farmers": 120,
+      "address": "123 Agro Street, Village Green, Uttar Pradesh",
+      "state": "Uttar Pradesh",
+      "district": "Meerut",
+      "area_of_operation": 5000,
+      "establishment_year": "2010",
+      "major_crop_produced": [
+        "Wheat",
+        "Rice",
+        "Maize"
+      ],
+      "previous_year_turnover": 1500000,
+      "contact_person_name": "Rajesh Kumar",
+      "contact_person_phone": "+01233037605",
+      "pan_no": "ABCDE1234X",
+      "is_pan_copy_collected": true,
+      "pan_image": "https://example.com/pan/FPO001.jpg",
+      "is_incorporation_doc_collected": true,
+      "incorporation_doc_img": "https://example.com/incorporation/FPO001.jpg",
+      "is_registration_no_collected": true,
+      "registration_no": "FPO001REG",
+      "registration_no_img": "https://example.com/registration/FPO001REG.jpg",
+      "is_director_shareholder_list_collected": true,
+      "director_shareholder_list_image": "https://example.com/directors/FPO001.jpg",
+      "active": true,
+      "created_at": "2025-01-01T12:00:00Z",
+      "updated_at": "2025-01-01T12:00:00Z"
+    },
+    {
+      "id": "FPO002",
+      "fpo_id": "FPOID002",
+      "constitution": "Private Limited Company",
+      "entity_name": "Sunny Acres Farmers Association",
+      "no_of_farmers": 85,
+      "address": "456 Green Lane, Sunnyville, Haryana",
+      "state": "Haryana",
+      "district": "Rohtak",
+      "area_of_operation": 3500,
+      "establishment_year": "2015",
+      "major_crop_produced": [
+        "Cotton",
+        "Sugarcane",
+        "Groundnut"
+      ],
+      "previous_year_turnover": 2000000,
+      "contact_person_name": "Ravi Mehta",
+      "contact_person_phone": "+01233037605",
+      "pan_no": "XYZAB5678G",
+      "is_pan_copy_collected": true,
+      "pan_image": "https://example.com/pan/FPO002.jpg",
+      "is_incorporation_doc_collected": true,
+      "incorporation_doc_img": "https://example.com/incorporation/FPO002.jpg",
+      "is_registration_no_collected": true,
+      "registration_no": "FPO002REG",
+      "registration_no_img": "https://example.com/registration/FPO002REG.jpg",
+      "is_director_shareholder_list_collected": true,
+      "director_shareholder_list_image": "https://example.com/directors/FPO002.jpg",
+      "active": true,
+      "created_at": "2025-02-15T12:00:00Z",
+      "updated_at": "2025-02-15T12:00:00Z"
+    },
+    {
+      "id": "FPO003",
+      "fpo_id": "FPOID003",
+      "constitution": "Producer Company",
+      "entity_name": "Farmers United Co-operative",
+      "no_of_farmers": 200,
+      "address": "789 Agricultural Blvd, Greenfield, Punjab",
+      "state": "Punjab",
+      "district": "Ludhiana",
+      "area_of_operation": 7000,
+      "establishment_year": "2018",
+      "major_crop_produced": [
+        "Rice",
+        "Barley",
+        "Sunflower"
+      ],
+      "previous_year_turnover": 5000000,
+      "contact_person_name": "Manoj Singh",
+      "contact_person_phone": "+01233037605",
+      "pan_no": "LMNOP1234P",
+      "is_pan_copy_collected": true,
+      "pan_image": "https://example.com/pan/FPO003.jpg",
+      "is_incorporation_doc_collected": true,
+      "incorporation_doc_img": "https://example.com/incorporation/FPO003.jpg",
+      "is_registration_no_collected": true,
+      "registration_no": "FPO003REG",
+      "registration_no_img": "https://example.com/registration/FPO003REG.jpg",
+      "is_director_shareholder_list_collected": true,
+      "director_shareholder_list_image": "https://example.com/directors/FPO003.jpg",
+      "active": true,
+      "created_at": "2025-03-10T12:00:00Z",
+      "updated_at": "2025-03-10T12:00:00Z"
+    }
+  ]
+  );
   const [loading, setLoading] = useState(true);
 
   useEffect(() => {
