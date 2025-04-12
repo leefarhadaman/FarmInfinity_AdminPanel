@@ -32,7 +32,7 @@ const Sidebar = () => {
         </div>
 
         {/* Dashboard */}
-        <div className="font-semibold flex items-center gap-2 py-3 px-2 hover:bg-gray-800 rounded cursor-pointer">
+        <div className="font-semibold flex items-center gap-2 py-4 px-2 hover:bg-gray-900 rounded cursor-pointer">
           <RiDashboardLine />
           <Link to="/dashboard">Dashboard</Link>
         </div>
