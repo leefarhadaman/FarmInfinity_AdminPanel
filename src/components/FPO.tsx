@@ -104,6 +104,7 @@ const Fpo = () => {
       "updated_at": "2025-03-10T12:00:00Z"
     }
   ]);
+  
   const [loading, setLoading] = useState(true);
 
   useEffect(() => {
@@ -114,6 +115,7 @@ const Fpo = () => {
             Authorization: `Bearer ${localStorage.getItem("keycloak-token")}`,
           },
         });
+        console.log("Fetched FPOs:", response.data); // Check API response
         setFpos(response.data); // Replace the hardcoded data with fetched data
       } catch (error) {
         console.error("Error fetching FPOs:", error);
@@ -158,7 +160,7 @@ const Fpo = () => {
                         to={`/fpo/${fpo.id}`}
                         className="text-blue-500 hover:underline"
                       >
-                        View Details →
+                        View Details →  
                       </Link>
                     </td>
                   </tr>

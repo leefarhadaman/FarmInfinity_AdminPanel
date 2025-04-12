@@ -1,11 +1,13 @@
 // src/pages/Farmers.tsx
 
+import { useEffect, useState } from "react";
 import { useNavigate } from "react-router-dom";
+import axios from "axios";
 
 const Farmers = () => {
   const navigate = useNavigate();
 
-  const farmers = [
+  const hardcodedFarmers = [
     {
       id: 1,
       name: "Kaustav",
@@ -52,6 +54,52 @@ const Farmers = () => {
     },
   ];
 
+  const [farmers, setFarmers] = useState(hardcodedFarmers);
+  const [searchQuery, setSearchQuery] = useState("");
+  const [loading, setLoading] = useState(true);
+  const [error, setError] = useState("");
+  const [currentPage, setCurrentPage] = useState(1);
+  const farmersPerPage = 5;
+
+  useEffect(() => {
+    const fetchFarmers = async () => {
+      try {
+        const response = await axios.get("http://localhost:3000/api/farmers", {
+          headers: {
+            Authorization: `Bearer ${localStorage.getItem("keycloak-token")}`,
+          },
+        });
+
+        setFarmers([...hardcodedFarmers, ...response.data]);
+      } catch (err) {
+        console.error("Error fetching farmers:", err);
+        setError("Failed to fetch farmer data.");
+      } finally {
+        setLoading(false);
+      }
+    };
+
+    fetchFarmers();
+  }, []);
+
+  // Filtered farmers based on search query
+  const filteredFarmers = farmers.filter(
+    (farmer) =>
+      farmer.name.toLowerCase().includes(searchQuery.toLowerCase()) ||
+      farmer.phone.includes(searchQuery)
+  );
+
+  // Pagination logic
+  const indexOfLastFarmer = currentPage * farmersPerPage;
+  const indexOfFirstFarmer = indexOfLastFarmer - farmersPerPage;
+  const currentFarmers = filteredFarmers.slice(indexOfFirstFarmer, indexOfLastFarmer);
+  const totalPages = Math.ceil(filteredFarmers.length / farmersPerPage);
+
+  const handleSearchChange = (e: React.ChangeEvent<HTMLInputElement>) => {
+    setSearchQuery(e.target.value);
+    setCurrentPage(1); // Reset to first page on search
+  };
+
   return (
     <div className="p-6">
       <h1 className="text-2xl font-bold mb-6 text-gray-800">👨‍🌾 Farmer List</h1>
@@ -60,6 +108,8 @@ const Farmers = () => {
       <div className="flex flex-col md:flex-row items-center justify-between gap-4 mb-6">
         <input
           placeholder="🔍 Search farmers"
+          value={searchQuery}
+          onChange={handleSearchChange}
           className="w-full md:w-1/2 border border-blue-300 px-4 py-2 rounded-lg focus:outline-none focus:ring-2 focus:ring-blue-500"
         />
         <select className="border border-gray-300 rounded-lg px-4 py-2 text-gray-700">
@@ -68,43 +118,73 @@ const Farmers = () => {
         </select>
       </div>
 
-      {/* Farmer Table */}
-      <div className="overflow-x-auto rounded-lg shadow-md">
-        <table className="w-full text-sm text-left bg-white">
-          <thead className="bg-gray-100 text-gray-700 uppercase text-xs">
-            <tr>
-              <th className="px-4 py-3">Name</th>
-              <th className="px-4 py-3">Gender</th>
-              <th className="px-4 py-3">Phone</th>
-              <th className="px-4 py-3">City/Town</th>
-              <th className="px-4 py-3">Created On</th>
-              <th className="px-4 py-3">Status</th>
-              <th className="px-4 py-3">Approval</th>
-              <th className="px-4 py-3">Loan Amt.</th>
-              <th className="px-4 py-3 text-center">⋮</th>
-            </tr>
-          </thead>
-          <tbody>
-            {farmers.map((farmer) => (
-              <tr
-                key={farmer.id}
-                onClick={() => navigate(`/farmers/${farmer.id}`)}
-                className="hover:bg-blue-50 cursor-pointer border-b"
-              >
-                <td className="px-4 py-3 font-medium text-gray-900">{farmer.name}</td>
-                <td className="px-4 py-3">{farmer.gender}</td>
-                <td className="px-4 py-3 text-blue-600 font-semibold">{farmer.phone}</td>
-                <td className="px-4 py-3">{farmer.city || '—'}</td>
-                <td className="px-4 py-3">{farmer.createdOn}</td>
-                <td className="px-4 py-3 text-yellow-600">{farmer.status}</td>
-                <td className="px-4 py-3">{farmer.approval}</td>
-                <td className="px-4 py-3">{farmer.amount || '—'}</td>
-                <td className="px-4 py-3 text-center text-xl text-gray-500">⋮</td>
-              </tr>
-            ))}
-          </tbody>
-        </table>
-      </div>
+      {/* Error message */}
+      {error && <div className="text-red-500 mb-4">{error}</div>}
+
+      {/* Loading */}
+      {loading ? (
+        <div className="text-gray-500">Loading farmers...</div>
+      ) : (
+        <>
+          <div className="overflow-x-auto rounded-lg shadow-md">
+            <table className="w-full text-sm text-left bg-white">
+              <thead className="bg-gray-100 text-gray-700 uppercase text-xs">
+                <tr>
+                  <th className="px-4 py-3">Name</th>
+                  <th className="px-4 py-3">Gender</th>
+                  <th className="px-4 py-3">Phone</th>
+                  <th className="px-4 py-3">City/Town</th>
+                  <th className="px-4 py-3">Created On</th>
+                  <th className="px-4 py-3">Status</th>
+                  <th className="px-4 py-3">Approval</th>
+                  <th className="px-4 py-3">Loan Amt.</th>
+                  <th className="px-4 py-3 text-center">⋮</th>
+                </tr>
+              </thead>
+              <tbody>
+                {currentFarmers.map((farmer) => (
+                  <tr
+                    key={farmer.id}
+                    onClick={() => navigate(`/farmers/${farmer.id}`)}
+                    className="hover:bg-blue-50 cursor-pointer border-b"
+                  >
+                    <td className="px-4 py-3 font-medium text-gray-900">{farmer.name}</td>
+                    <td className="px-4 py-3">{farmer.gender}</td>
+                    <td className="px-4 py-3 text-blue-600 font-semibold">{farmer.phone}</td>
+                    <td className="px-4 py-3">{farmer.city || "—"}</td>
+                    <td className="px-4 py-3">{farmer.createdOn}</td>
+                    <td className="px-4 py-3 text-yellow-600">{farmer.status}</td>
+                    <td className="px-4 py-3">{farmer.approval}</td>
+                    <td className="px-4 py-3">{farmer.amount || "—"}</td>
+                    <td className="px-4 py-3 text-center text-xl text-gray-500">⋮</td>
+                  </tr>
+                ))}
+              </tbody>
+            </table>
+          </div>
+
+          {/* Pagination Controls */}
+          <div className="mt-4 flex justify-center gap-2">
+            <button
+              disabled={currentPage === 1}
+              onClick={() => setCurrentPage((prev) => prev - 1)}
+              className="px-3 py-1 border rounded disabled:opacity-50"
+            >
+              ⬅ Prev
+            </button>
+            <span className="px-3 py-1">
+              Page {currentPage} of {totalPages}
+            </span>
+            <button
+              disabled={currentPage === totalPages}
+              onClick={() => setCurrentPage((prev) => prev + 1)}
+              className="px-3 py-1 border rounded disabled:opacity-50"
+            >
+              Next ➡
+            </button>
+          </div>
+        </>
+      )}
     </div>
   );
 };
