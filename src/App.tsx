@@ -8,7 +8,7 @@ import Farmers from './components/Farmers';
 import Agent from './components/Agent';
 import BankAgent from './components/BankAgent';
 import FarmerDetails from './components/FarmerDetails';
-import keycloak from './keycloak';
+
 function App() {
  
   return (
