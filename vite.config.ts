@@ -6,5 +6,16 @@ import react from '@vitejs/plugin-react'
 export default defineConfig({
   plugins: [
     tailwindcss(),
-    react()],
+    react()
+  ],
+  server: {
+    proxy: {
+      '/api': {
+        target: 'https://dev-api.farmeasytechnologies.com',
+        changeOrigin: true,
+        secure: false,
+        rewrite: (path) => path.replace(/^\/api/, '/api'), // Keep `/api` prefix intact
+      }
+    }
+  }
 })

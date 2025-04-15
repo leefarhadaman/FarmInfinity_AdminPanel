@@ -1,131 +1,53 @@
 import { useEffect, useState } from "react";
 import axios from "axios";
 import { Link } from "react-router-dom";
+import { FpoModel } from "../data/FpoModel";
 
 const Fpo = () => {
-  const [fpos, setFpos] = useState([
-    {
-      "id": "FPO001",
-      "fpo_id": "FPOID001",
-      "constitution": "Cooperative Society",
-      "entity_name": "Green Fields Farmers Organization",
-      "no_of_farmers": 120,
-      "address": "123 Agro Street, Village Green, Uttar Pradesh",
-      "state": "Uttar Pradesh",
-      "district": "Meerut",
-      "area_of_operation": 5000,
-      "establishment_year": "2010",
-      "major_crop_produced": [
-        "Wheat",
-        "Rice",
-        "Maize"
-      ],
-      "previous_year_turnover": 1500000,
-      "contact_person_name": "Rajesh Kumar",
-      "contact_person_phone": "+01233037605",
-      "pan_no": "ABCDE1234X",
-      "is_pan_copy_collected": true,
-      "pan_image": "https://example.com/pan/FPO001.jpg",
-      "is_incorporation_doc_collected": true,
-      "incorporation_doc_img": "https://example.com/incorporation/FPO001.jpg",
-      "is_registration_no_collected": true,
-      "registration_no": "FPO001REG",
-      "registration_no_img": "https://example.com/registration/FPO001REG.jpg",
-      "is_director_shareholder_list_collected": true,
-      "director_shareholder_list_image": "https://example.com/directors/FPO001.jpg",
-      "active": true,
-      "created_at": "2025-01-01T12:00:00Z",
-      "updated_at": "2025-01-01T12:00:00Z"
-    },
-    {
-      "id": "FPO002",
-      "fpo_id": "FPOID002",
-      "constitution": "Private Limited Company",
-      "entity_name": "Sunny Acres Farmers Association",
-      "no_of_farmers": 85,
-      "address": "456 Green Lane, Sunnyville, Haryana",
-      "state": "Haryana",
-      "district": "Rohtak",
-      "area_of_operation": 3500,
-      "establishment_year": "2015",
-      "major_crop_produced": [
-        "Cotton",
-        "Sugarcane",
-        "Groundnut"
-      ],
-      "previous_year_turnover": 2000000,
-      "contact_person_name": "Ravi Mehta",
-      "contact_person_phone": "+01233037605",
-      "pan_no": "XYZAB5678G",
-      "is_pan_copy_collected": true,
-      "pan_image": "https://example.com/pan/FPO002.jpg",
-      "is_incorporation_doc_collected": true,
-      "incorporation_doc_img": "https://example.com/incorporation/FPO002.jpg",
-      "is_registration_no_collected": true,
-      "registration_no": "FPO002REG",
-      "registration_no_img": "https://example.com/registration/FPO002REG.jpg",
-      "is_director_shareholder_list_collected": true,
-      "director_shareholder_list_image": "https://example.com/directors/FPO002.jpg",
-      "active": true,
-      "created_at": "2025-02-15T12:00:00Z",
-      "updated_at": "2025-02-15T12:00:00Z"
-    },
-    {
-      "id": "FPO003",
-      "fpo_id": "FPOID003",
-      "constitution": "Producer Company",
-      "entity_name": "Farmers United Co-operative",
-      "no_of_farmers": 200,
-      "address": "789 Agricultural Blvd, Greenfield, Punjab",
-      "state": "Punjab",
-      "district": "Ludhiana",
-      "area_of_operation": 7000,
-      "establishment_year": "2018",
-      "major_crop_produced": [
-        "Rice",
-        "Barley",
-        "Sunflower"
-      ],
-      "previous_year_turnover": 5000000,
-      "contact_person_name": "Manoj Singh",
-      "contact_person_phone": "+01233037605",
-      "pan_no": "LMNOP1234P",
-      "is_pan_copy_collected": true,
-      "pan_image": "https://example.com/pan/FPO003.jpg",
-      "is_incorporation_doc_collected": true,
-      "incorporation_doc_img": "https://example.com/incorporation/FPO003.jpg",
-      "is_registration_no_collected": true,
-      "registration_no": "FPO003REG",
-      "registration_no_img": "https://example.com/registration/FPO003REG.jpg",
-      "is_director_shareholder_list_collected": true,
-      "director_shareholder_list_image": "https://example.com/directors/FPO003.jpg",
-      "active": true,
-      "created_at": "2025-03-10T12:00:00Z",
-      "updated_at": "2025-03-10T12:00:00Z"
-    }
-  ]);
-  
-  const [loading, setLoading] = useState(true);
+  const [fpos, setFpos] = useState<FpoModel[]>([]);
+  const [loading, setLoading] = useState<boolean>(true);
+  const [error, setError] = useState<string | null>(null);
 
   useEffect(() => {
     const fetchFpos = async () => {
+      setError(null);
+      setLoading(true);
       try {
-        const response = await axios.get("http://localhost:3000/api/fpos", {
-          headers: {
-            Authorization: `Bearer ${localStorage.getItem("keycloak-token")}`,
-          },
-        });
-        console.log("Fetched FPOs:", response.data); // Check API response
-        setFpos(response.data); // Replace the hardcoded data with fetched data
-      } catch (error) {
-        console.error("Error fetching FPOs:", error);
+        console.log("Fetching FPOs...");  // Debug statement to indicate fetching started
+        const response = await axios.get("/api/fpos/");
+        const contentType = response.headers["content-type"];
+  
+        // Debug the content-type to see if it's JSON
+        console.log("Content-Type of response:", contentType);
+    
+        // Check if the response is JSON
+        if (contentType && contentType.includes("application/json")) {
+          const data = response.data;
+          console.log("Data fetched:", data);  // Debug statement to log fetched data
+  
+          if (Array.isArray(data)) {
+            setFpos(data);
+          } else {
+            console.warn("Unexpected API response format", data);
+            setFpos([]);
+          }
+        } else {
+          console.warn("Received non-JSON response", response);
+          setError("Unexpected response format from API.");
+        }
+      } catch (error: any) {
+        console.error("Error fetching FPOs:", error.message);
+        setError("Failed to fetch data. Please try again later.");
       } finally {
         setLoading(false);
+        console.log("Loading state set to false.");  // Debug statement to track loading state change
       }
     };
-
+  
     fetchFpos();
   }, []);
+  
+  
 
   return (
     <div className="p-6">
@@ -133,6 +55,8 @@ const Fpo = () => {
 
       {loading ? (
         <div className="text-gray-500">Loading FPOs...</div>
+      ) : error ? (
+        <div className="text-red-500">{error}</div>
       ) : (
         <div className="overflow-x-auto bg-white rounded-lg shadow-md">
           <table className="min-w-full table-auto">
@@ -149,25 +73,25 @@ const Fpo = () => {
             <tbody>
               {fpos.length > 0 ? (
                 fpos.map((fpo) => (
-                  <tr key={fpo.id} className="border-t hover:bg-gray-50">
-                    <td className="px-4 py-2">{fpo.entity_name}</td>
-                    <td className="px-4 py-2">{fpo.no_of_farmers}</td>
-                    <td className="px-4 py-2">{fpo.state}</td>
-                    <td className="px-4 py-2">{fpo.district}</td>
-                    <td className="px-4 py-2">{fpo.contact_person_phone}</td>
+                  <tr key={fpo.id || fpo._id} className="border-t hover:bg-gray-50">
+                    <td className="px-4 py-2">{fpo.entity_name || "N/A"}</td>
+                    <td className="px-4 py-2">{fpo.no_of_farmers || "N/A"}</td>
+                    <td className="px-4 py-2">{fpo.state || "N/A"}</td>
+                    <td className="px-4 py-2">{fpo.district || "N/A"}</td>
+                    <td className="px-4 py-2">{fpo.contact_person_phone || "N/A"}</td>
                     <td className="px-4 py-2">
                       <Link
-                        to={`/fpo/${fpo.id}`}
+                        to={`/fpo/${fpo.id || fpo._id}`}
                         className="text-blue-500 hover:underline"
                       >
-                        View Details →  
+                        View Details →
                       </Link>
                     </td>
                   </tr>
                 ))
               ) : (
                 <tr>
-                  <td className="px-4 py-4 text-center text-gray-500" >
+                  <td colSpan={6} className="px-4 py-4 text-center text-gray-500">
                     No FPOs found.
                   </td>
                 </tr>
